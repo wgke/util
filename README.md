@@ -18,3 +18,18 @@
     annotationProcessor 'com.github.bumptech.glide:compiler:4.9.0'
     implementation 'jp.wasabeef:glide-transformations:4.0.1'
     implementation 'com.alibaba:fastjson:1.1.70.android'
+
+
+-------------------
+
+allprojects {
+		repositories {
+			...
+			maven { url 'https://jitpack.io' }
+		}
+	}
+
+--------------------
+dependencies {
+	        implementation 'com.github.wgke:util:1.0'
+	}
