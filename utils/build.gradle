@@ -29,4 +29,6 @@ dependencies {
     annotationProcessor 'com.github.bumptech.glide:compiler:4.9.0'
     implementation 'jp.wasabeef:glide-transformations:4.0.1'
     implementation 'com.alibaba:fastjson:1.1.70.android'
+    implementation 'com.lzy.net:okgo:+'
+    implementation 'com.lzy.net:okserver:+'
 }
