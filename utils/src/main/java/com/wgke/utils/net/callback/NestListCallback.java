@@ -36,7 +36,7 @@ public abstract class NestListCallback<T> extends NestCallback<BaseBean> {
     @Override
     public void onSuccess(BaseBean bean) throws Exception {
         dismissProgressDialog();
-        setMsg(bean != null ? bean.msg : "未得到信息");
+        setMsg(bean != null ? bean.msg : "未获取");
         String code = getCode(bean);
         if (TextUtils.equals("0", code)) {
             Type genType = getClass().getGenericSuperclass();

@@ -46,7 +46,7 @@ public abstract class NestCallback<T> implements IHttpCallBack<BaseBean> {
     @Override
     public void onSuccess(BaseBean bean) throws Exception {
         dismissProgressDialog();
-        setMsg(bean != null ? bean.msg : "未得道信息");
+        setMsg(bean != null ? bean.msg : "未获取信息");
         String code = getCode(bean);
         if (TextUtils.equals("0", code)) {
             Type genType = getClass().getGenericSuperclass();
@@ -61,6 +61,9 @@ public abstract class NestCallback<T> implements IHttpCallBack<BaseBean> {
         }
     }
 
+    /**
+     * 0表示正确返回
+     */
     public String getCode(BaseBean bean) {
         if (bean != null && TextUtils.equals("0", bean.code)) {
             return "0";
