@@ -55,21 +55,20 @@ public class HttpEngine {
                         String json = response.body().string();
                         LogUtils.response(json);
                         JSONObject jsonObject = JSON.parseObject(json);
-                        int code1 = jsonObject.getIntValue("code");
-                        if (code1 == 0) {
-                            LogUtils.response("code=" + code1);
+                        String success = jsonObject.getString("success");
+                        if ("true".equals(success)) {
                             return JSONObject.parseObject(json, clazz);
                         } else {
-                            String msg = jsonObject.getString("msg");
-                            BaseBean baseRes = new BaseBean(msg, code1 + "");
+                            String msg = jsonObject.getString("message");
+                            BaseBean baseRes = new BaseBean(msg, success);
                             return JSONObject.parseObject(JSON.toJSONString(baseRes), clazz);
                         }
                     } catch (Exception e) {
-                        BaseBean baseRes = new BaseBean("网络连接失败！错误代码：-1", "-1");
+                        BaseBean baseRes = new BaseBean("网络连接失败！错误代码：-1", "false");
                         return JSONObject.parseObject(JSON.toJSONString(baseRes), clazz);
                     }
                 } else {
-                    BaseBean baseRes = new BaseBean("网络连接失败！错误代码：-1", "-1");
+                    BaseBean baseRes = new BaseBean("网络连接失败！错误代码：-1", "false");
                     return JSONObject.parseObject(JSON.toJSONString(baseRes), clazz);
                 }
             }
@@ -80,14 +79,14 @@ public class HttpEngine {
                     try {
                         callBack.onSuccess(response.body());
                     } catch (Exception e) {
-                        callBack.onError(new BaseBean(response.message(),-1));
+                        callBack.onError(new BaseBean(response.message(), "false"));
                     }
             }
 
             @Override
             public void onError(com.lzy.okgo.model.Response<T> response) {
                 if (callBack != null) {
-                    callBack.onError(new BaseBean(response.message(),-1));
+                    callBack.onError(new BaseBean(response.message(), "false"));
                 }
 
             }
@@ -122,20 +121,20 @@ public class HttpEngine {
                         String json = response.body().string();
                         LogUtils.response(json);
                         JSONObject jsonObject = JSON.parseObject(json);
-                        int code1 = jsonObject.getIntValue("code");
-                        if (code1 == 0) {
+                        String success = jsonObject.getString("success");
+                        if ("true".equals(success)) {
                             return JSONObject.parseObject(json, clazz);
                         } else {
-                            String msg = jsonObject.getString("msg");
-                            BaseBean baseRes = new BaseBean(msg, code1);
+                            String msg = jsonObject.getString("message");
+                            BaseBean baseRes = new BaseBean(msg, success);
                             return JSONObject.parseObject(JSON.toJSONString(baseRes), clazz);
                         }
                     } catch (Exception e) {
-                        BaseBean baseRes = new BaseBean("网络连接失败！错误代码：-1", 0);
+                        BaseBean baseRes = new BaseBean("网络连接失败！错误代码：-1", "false");
                         return JSONObject.parseObject(JSON.toJSONString(baseRes), clazz);
                     }
                 } else {
-                    BaseBean baseRes = new BaseBean("网络连接失败！错误代码：-1", 0);
+                    BaseBean baseRes = new BaseBean("网络连接失败！错误代码：-1", "false");
                     return JSONObject.parseObject(JSON.toJSONString(baseRes), clazz);
                 }
             }
@@ -146,14 +145,14 @@ public class HttpEngine {
                     try {
                         callBack.onSuccess(response.body());
                     } catch (Exception e) {
-                        callBack.onError(new BaseBean(response.message(),-1));
+                        callBack.onError(new BaseBean(response.message(), "false"));
                     }
             }
 
             @Override
             public void onError(com.lzy.okgo.model.Response<T> response) {
                 if (callBack != null) {
-                    callBack.onError(new BaseBean(response.message(),-1));
+                    callBack.onError(new BaseBean(response.message(), "false"));
                 }
             }
 
@@ -181,22 +180,26 @@ public class HttpEngine {
         OkGo.getInstance().<T>post(url).params("file", files).params(params).headers(headers).tag(this).execute(new AbsCallback<T>() {
             @Override
             public T convertResponse(Response response) throws Throwable {
-
                 int code = response.code();//请求成功
                 if (code == 200) {
-                    String json = response.body().string();
                     try {
+                        String json = response.body().string();
                         LogUtils.response(json);
-                        return JSONObject.parseObject(json, clazz);
-                    } catch (Exception e) {
                         JSONObject jsonObject = JSON.parseObject(json);
-                        String msg = jsonObject.getString("msg");
-                        int code1 = jsonObject.getIntValue("code");
-                        BaseBean baseRes = new BaseBean(msg, code1);
+                        String success = jsonObject.getString("success");
+                        if ("true".equals(success)) {
+                            return JSONObject.parseObject(json, clazz);
+                        } else {
+                            String msg = jsonObject.getString("message");
+                            BaseBean baseRes = new BaseBean(msg, success);
+                            return JSONObject.parseObject(JSON.toJSONString(baseRes), clazz);
+                        }
+                    } catch (Exception e) {
+                        BaseBean baseRes = new BaseBean("网络连接失败！错误代码：-1", "false");
                         return JSONObject.parseObject(JSON.toJSONString(baseRes), clazz);
                     }
                 } else {
-                    BaseBean baseRes = new BaseBean("网络连接失败！错误代码：-1", 0);
+                    BaseBean baseRes = new BaseBean("网络连接失败！错误代码：-1", "false");
                     return JSONObject.parseObject(JSON.toJSONString(baseRes), clazz);
                 }
             }
@@ -207,7 +210,7 @@ public class HttpEngine {
                     try {
                         callBack.onSuccess(response.body());
                     } catch (Exception e) {
-                        callBack.onError(new BaseBean(response.message(), -1));
+                        callBack.onError(new BaseBean(response.message(), "false"));
                     }
             }
 
@@ -241,7 +244,7 @@ public class HttpEngine {
             public void onError(Progress progress) {
                 LogUtils.e("下载中错误");
                 if (callBack != null)
-                    callBack.onError(new BaseBean("下载中错误", -1));
+                    callBack.onError(new BaseBean("下载中错误", "false"));
             }
 
             @Override
@@ -251,7 +254,7 @@ public class HttpEngine {
                     try {
                         callBack.onSuccess(file.getAbsolutePath());
                     } catch (Exception e) {
-                        callBack.onError(new BaseBean("完成", -1));
+                        callBack.onError(new BaseBean("完成", "false"));
                     }
                 }
             }

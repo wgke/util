@@ -36,13 +36,13 @@ public abstract class NestListCallback<T> extends NestCallback<BaseBean> {
     @Override
     public void onSuccess(BaseBean bean) throws Exception {
         dismissProgressDialog();
-        setMsg(bean != null ? bean.msg : "未获取");
+        setMsg(bean != null ? bean.message : "未获取");
         String code = getCode(bean);
         if (TextUtils.equals("0", code)) {
             Type genType = getClass().getGenericSuperclass();
             Type[] params = ((ParameterizedType) genType).getActualTypeArguments();
             Class<T> clazz = (Class) params[0];
-            List<T> list = JSONObject.parseArray(bean.data, clazz);
+            List<T> list = JSONObject.parseArray(bean.obj, clazz);
             success(list);
         } else {
             failed(bean == null ? getBean("-1", "服务君没有给消息") : bean);
@@ -55,17 +55,17 @@ public abstract class NestListCallback<T> extends NestCallback<BaseBean> {
     }
 
     public String getCode(BaseBean bean) {
-        if (bean != null && TextUtils.equals("0", bean.code)) {
-            return "0";
+        if (bean != null && TextUtils.equals("true", bean.success)) {
+            return "true";
         } else if (bean != null)
-            return bean.code;
-        return "-1";
+            return bean.success;
+        return "false";
     }
 
     @Override
     public void onError(BaseBean ex) {
         dismissProgressDialog();
-        failed(getBean("-1", ex.msg));
+        failed(getBean("false", ex.message));
     }
 
     public abstract void success(List<T> list);
@@ -75,7 +75,7 @@ public abstract class NestListCallback<T> extends NestCallback<BaseBean> {
      */
     public void failed(BaseBean bean) {
         if (context != null) {
-            Toast.makeText(context, bean.msg, Toast.LENGTH_SHORT).show();
+            Toast.makeText(context, bean.message, Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -93,8 +93,8 @@ public abstract class NestListCallback<T> extends NestCallback<BaseBean> {
      */
     public BaseBean getBean(String code, String msg) {
         BaseBean bean = new BaseBean();
-        bean.code = code;
-        bean.msg = msg;
+        bean.success = code;
+        bean.message = msg;
         setMsg(msg);
         return bean;
     }

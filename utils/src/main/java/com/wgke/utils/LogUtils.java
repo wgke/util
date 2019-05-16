@@ -11,7 +11,7 @@ public class LogUtils {
     private static final int LEVEL_ERROR = 5;
 
     private static String mTag = "tag---";
-    private static int mDebuggable = BuildConfig.DEBUG ? LEVEL_ERROR : LEVEL_DEBUG;
+    public static int mDebuggable = LEVEL_DEBUG;
 
     public static void v(String msg) {
         if (mDebuggable >= LEVEL_VERBOSE) {

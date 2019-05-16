@@ -14,6 +14,7 @@ public abstract class BeanCallBack<T> extends NestCallback<T> {
             show();
         }
     }
+
     @Override
     public void show() {
         ToastUtil.showToast("请求开始");

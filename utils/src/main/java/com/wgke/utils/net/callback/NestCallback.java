@@ -46,13 +46,13 @@ public abstract class NestCallback<T> implements IHttpCallBack<BaseBean> {
     @Override
     public void onSuccess(BaseBean bean) throws Exception {
         dismissProgressDialog();
-        setMsg(bean != null ? bean.msg : "未获取信息");
+        setMsg(bean != null ? bean.message : "未获取信息");
         String code = getCode(bean);
         if (TextUtils.equals("0", code)) {
             Type genType = getClass().getGenericSuperclass();
             Type[] params = ((ParameterizedType) genType).getActualTypeArguments();
             Class<T> clazz = (Class) params[0];
-            T t = JsonUtil.toBean(bean.data, clazz);
+            T t = JsonUtil.toBean(bean.obj, clazz);
             if (t != null) {
                 success(t);
             } else success(null);
@@ -65,11 +65,11 @@ public abstract class NestCallback<T> implements IHttpCallBack<BaseBean> {
      * 0表示正确返回
      */
     public String getCode(BaseBean bean) {
-        if (bean != null && TextUtils.equals("0", bean.code)) {
+        if (bean != null && TextUtils.equals("true", bean.success)) {
             return "0";
         } else if (bean != null)
-            return bean.code;
-        return "-1";
+            return bean.success;
+        return "false";
     }
 
     @Override
@@ -88,7 +88,7 @@ public abstract class NestCallback<T> implements IHttpCallBack<BaseBean> {
      */
     public void failed(BaseBean bean) {
         if (context != null) {
-            Toast.makeText(context, bean.msg, Toast.LENGTH_SHORT).show();
+            Toast.makeText(context, bean.message, Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -106,8 +106,8 @@ public abstract class NestCallback<T> implements IHttpCallBack<BaseBean> {
      */
     public BaseBean getBean(String code, String msg) {
         BaseBean bean = new BaseBean();
-        bean.code = code;
-        bean.msg = msg;
+        bean.success = code;
+        bean.message = msg;
         setMsg(msg);
         return bean;
     }

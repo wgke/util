@@ -7,10 +7,8 @@ import com.wgke.utils.net.callback.NestCallback;
 import com.wgke.utils.net.callback.NestListCallback;
 
 import java.io.File;
-import java.util.HashMap;
 import java.util.Map;
 
-import jp.wasabeef.glide.transformations.internal.Utils;
 
 /**
  * Created by wangke on 2018/12/14.
@@ -41,7 +39,7 @@ public class HttpUtils {
                     try {
                         callBack.onSuccess(t);
                     } catch (Exception e) {
-                        callBack.onError(new BaseBean(e.getMessage(), 0));
+                        callBack.onError(new BaseBean(e.getMessage(), "false"));
                     }
                 } else {
                     callBack.onSuccess(t);
@@ -92,7 +90,7 @@ public class HttpUtils {
                     try {
                         callBack.onSuccess(t);
                     } catch (Exception e) {
-                        callBack.onError(new BaseBean(e.getMessage(), 0));
+                        callBack.onError(new BaseBean(e.getMessage(), "false"));
                     }
                 }
 
@@ -124,7 +122,7 @@ public class HttpUtils {
                     try {
                         callBack.onSuccess(t);
                     } catch (Exception e) {
-                        callBack.onError(new BaseBean(e.getMessage(), 0));
+                        callBack.onError(new BaseBean(e.getMessage(), "false"));
                     }
                 }
             }

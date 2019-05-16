@@ -5,6 +5,7 @@ import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v4.app.Fragment;
 import android.widget.ImageView;
 
 import com.bumptech.glide.Glide;
@@ -12,6 +13,7 @@ import com.bumptech.glide.RequestBuilder;
 import com.bumptech.glide.load.DataSource;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.load.engine.GlideException;
+import com.bumptech.glide.load.resource.bitmap.RoundedCorners;
 import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.RequestOptions;
 import com.bumptech.glide.request.target.SimpleTarget;
@@ -22,19 +24,22 @@ import com.wgke.utils.callback.GlideListener;
 
 import java.io.File;
 
-import jp.wasabeef.glide.transformations.RoundedCornersTransformation;
-
 /**
  * Glide工具类
  */
 public class GlideApp {
     private Context context;
+    private Fragment fragment;
     private RequestBuilder<Drawable> builder;
     RequestOptions options;
     RequestListener<Drawable> listener;
 
     public GlideApp(Context context) {
         this.context = context;
+    }
+
+    public GlideApp(Fragment fragment) {
+        this.fragment = fragment;
     }
 
     /**
@@ -46,10 +51,23 @@ public class GlideApp {
     }
 
     /**
+     * 初始化
+     */
+    public static GlideApp with(Fragment fragment) {
+        GlideApp app = new GlideApp(fragment);
+        return app;
+    }
+
+    /**
      * 网络图片
      */
     public GlideApp load(String url) {
-        builder = Glide.with(context).load(url);
+        if (url != null && url.contains(".png") && !url.endsWith(".png")) {
+            url = url.substring(0, url.indexOf(".png") + 4);
+        }
+        if (context != null)
+            builder = Glide.with(context).load(url);
+        else builder = Glide.with(fragment).load(url);
         return this;
     }
 
@@ -57,7 +75,9 @@ public class GlideApp {
      * 网络图片
      */
     public GlideApp load(int res) {
-        builder = Glide.with(context).load(res);
+        if (context != null)
+            builder = Glide.with(context).load(res);
+        else builder = Glide.with(fragment).load(res);
         return this;
     }
 
@@ -65,7 +85,9 @@ public class GlideApp {
      * 本地图片
      */
     public GlideApp load(File res) {
-        builder = Glide.with(context).load(res);
+        if (context != null)
+            builder = Glide.with(context).load(res);
+        else builder = Glide.with(fragment).load(res);
         return this;
     }
 
@@ -73,7 +95,9 @@ public class GlideApp {
      * bitmap图片
      */
     public GlideApp load(Bitmap res) {
-        builder = Glide.with(context).load(res);
+        if (context != null)
+            builder = Glide.with(context).load(res);
+        else builder = Glide.with(fragment).load(res);
         return this;
     }
 
@@ -81,7 +105,9 @@ public class GlideApp {
      * Drawable
      */
     public GlideApp load(Drawable res) {
-        builder = Glide.with(context).load(res);
+        if (context != null)
+            builder = Glide.with(context).load(res);
+        else builder = Glide.with(fragment).load(res);
         return this;
     }
 
@@ -122,7 +148,8 @@ public class GlideApp {
     public GlideApp rounded(int dip) {
         if (options == null)
             options = new RequestOptions().centerCrop();
-        options.bitmapTransform(new RoundedCornersTransformation(dip2px(context, dip), 0, RoundedCornersTransformation.CornerType.ALL));
+        RoundedCorners roundedCorners = new RoundedCorners(dip);
+        options.bitmapTransform(roundedCorners);
         return this;
     }
 
@@ -178,9 +205,6 @@ public class GlideApp {
         return (int) (dip * density + 0.5);
     }
 
-    /**
-     * 用来监听加载是否完成，然后完成后续逻辑
-     */
     public GlideApp listener(final FileCallback callback) {
         listener = new RequestListener<Drawable>() {
             @Override
