@@ -28,14 +28,16 @@ public class MainActivity extends Activity {
                 ReqParam.init().add("email", "wangke0802@qq.com").add("password", "e10adc3949ba59abbe56e057f20f883e").end(),
                 new BeanCallBack<LoginBean>(this, true) {
                     @Override
-                    public void success(LoginBean loginBean) {
+                    public void success(final LoginBean loginBean) {
                         new Handler().postDelayed(new Runnable() {
                             @Override
                             public void run() {
-                                ToastUtil.showToast("登录成功");
+                                if (loginBean != null)
+                                    ToastUtil.showToast("登录成功");
+                                else
+                                    ToastUtil.showToast("登录成功!!!");
                             }
                         }, 2000);
-
                     }
                 });
     }

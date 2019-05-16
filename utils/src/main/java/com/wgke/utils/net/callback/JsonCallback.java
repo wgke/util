@@ -1,33 +1,25 @@
 package com.wgke.utils.net.callback;
 
 import android.content.Context;
-import android.support.annotation.NonNull;
 import android.text.TextUtils;
 import android.widget.Toast;
 
-import com.wgke.utils.JsonUtil;
 import com.wgke.utils.net.bean.BaseBean;
 
-import java.lang.reflect.ParameterizedType;
-import java.lang.reflect.Type;
-
-/**
- * 解析封装基类
- */
-public abstract class NestCallback<T> implements IHttpCallBack<BaseBean> {
+public abstract class JsonCallback implements IHttpCallBack<BaseBean> {
     public Context context;
     public boolean isShow;//是否展示loading
-    private String msg;
+    private java.lang.String msg;
 
-    public NestCallback() {
+    public JsonCallback() {
 
     }
 
-    public NestCallback(Context context) {
+    public JsonCallback(Context context) {
         this.context = context;
     }
 
-    public NestCallback(Context context, boolean isShow) {
+    public JsonCallback(Context context, boolean isShow) {
         this.context = context;
         this.isShow = isShow;
         if (isShow && context != null) {
@@ -47,20 +39,10 @@ public abstract class NestCallback<T> implements IHttpCallBack<BaseBean> {
     public void onSuccess(BaseBean bean) throws Exception {
         dismissProgressDialog();
         setMsg(bean != null ? bean.message : "未获取信息");
-        String code = getCode(bean);
+        java.lang.String code = getCode(bean);
         if (TextUtils.equals("true", code)) {
-            Type genType = getClass().getGenericSuperclass();
-            Type[] params = ((ParameterizedType) genType).getActualTypeArguments();
-            Class<T> clazz = (Class) params[0];
-            String str = "{}";
-            if (bean.obj != null && bean.obj.startsWith("{")) {
-                str = bean.obj;
-            }
-            T t = JsonUtil.toBean(str, clazz);
-            if (t != null) {
-                success(t);
-            } else success(null);
-
+            String str = TextUtils.isEmpty(bean.obj) ? "" : bean.obj;
+            success(str);
         } else {
             failed(bean == null ? getBean(code, "服务君没有给消息") : bean);
         }
@@ -69,7 +51,7 @@ public abstract class NestCallback<T> implements IHttpCallBack<BaseBean> {
     /**
      * 0表示正确返回
      */
-    public String getCode(BaseBean bean) {
+    public java.lang.String getCode(BaseBean bean) {
         if (bean != null && TextUtils.equals("true", bean.success)) {
             return "true";
         } else if (bean != null)
@@ -86,7 +68,7 @@ public abstract class NestCallback<T> implements IHttpCallBack<BaseBean> {
     /**
      * 成功返回
      */
-    public abstract void success(@NonNull T t);
+    public abstract void success(String t);
 
     /**
      * 失败返回
@@ -109,7 +91,7 @@ public abstract class NestCallback<T> implements IHttpCallBack<BaseBean> {
     /**
      * 获取数据信息
      */
-    public BaseBean getBean(String code, String msg) {
+    public BaseBean getBean(java.lang.String code, java.lang.String msg) {
         BaseBean bean = new BaseBean();
         bean.success = code;
         bean.message = msg;
@@ -117,11 +99,11 @@ public abstract class NestCallback<T> implements IHttpCallBack<BaseBean> {
         return bean;
     }
 
-    public String getMsg() {
+    public java.lang.String getMsg() {
         return msg;
     }
 
-    public void setMsg(String msg) {
+    public void setMsg(java.lang.String msg) {
         this.msg = msg;
     }
 }
