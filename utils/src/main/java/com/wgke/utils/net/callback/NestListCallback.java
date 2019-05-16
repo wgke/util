@@ -38,14 +38,14 @@ public abstract class NestListCallback<T> extends NestCallback<BaseBean> {
         dismissProgressDialog();
         setMsg(bean != null ? bean.message : "未获取");
         String code = getCode(bean);
-        if (TextUtils.equals("0", code)) {
+        if (TextUtils.equals("true", code)) {
             Type genType = getClass().getGenericSuperclass();
             Type[] params = ((ParameterizedType) genType).getActualTypeArguments();
             Class<T> clazz = (Class) params[0];
             List<T> list = JSONObject.parseArray(bean.obj, clazz);
             success(list);
         } else {
-            failed(bean == null ? getBean("-1", "服务君没有给消息") : bean);
+            failed(bean == null ? getBean("false", "服务君没有给消息") : bean);
         }
     }
 
