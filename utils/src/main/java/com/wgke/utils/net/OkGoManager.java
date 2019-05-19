@@ -44,6 +44,8 @@ public class OkGoManager {
     }
 
     public void setRequest(String key, String value) {
+        if(map==null)
+           map= new HashMap<>();
         map.put(key, value);
     }
 
