@@ -9,7 +9,7 @@ import com.lzy.okserver.OkDownload;
 
 import java.io.IOException;
 import java.util.Map;
-
+import java.util.HashMap;
 import okhttp3.Interceptor;
 import okhttp3.OkHttpClient;
 import okhttp3.Response;
@@ -44,8 +44,9 @@ public class OkGoManager {
     }
 
     public void setRequest(String key, String value) {
-        if(map==null)
-           map= new HashMap<>();
+        if(map==null){
+           map=new HashMap<String, String>();
+        }
         map.put(key, value);
     }
 
